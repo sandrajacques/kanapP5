@@ -66,6 +66,7 @@ const products = [
     "colors": ["Pink", "Brown", "Yellow", "White"],
     "_id": "a6ec5b49bd164d7fbe10f37b6363f9fb",
     "name": "Kanap orthosie",
+    
     "price": 3999,
     "imageUrl": "kanap08.jpeg",
     "description": "Mauris molestie laoreet finibus. Aenean scelerisque convallis lacus at dapibus. Morbi imperdiet enim metus rhoncus.",

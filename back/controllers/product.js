@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 const uuid = require('uuid/v1');
 const Product = require('../models/Product');
 
@@ -61,16 +68,13 @@ exports.orderProducts = (req, res, next) => {
     const queryPromise = new Promise((resolve, reject) => {
       Product.findById(productId).then(
         (product) => {
-          if (!product) {
-            reject('Product not found: ' + productId);
-          }
+          if (!product) {reject('Product not found: ' + productId);
+        }
           product.imageUrl = req.protocol + '://' + req.get('host') + '/images/' + product.imageUrl;
           resolve(product);
         }
       ).catch(
-        () => {
-          reject('Database error!');
-        }
+        () => {reject('Database error!');}
       )
     });
     queries.push(queryPromise);

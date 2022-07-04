@@ -1,10 +1,12 @@
-fetch("http://localhost:3000/api/products").then(function (response) {
-    response.json().then(function (produits) {
-        //document.getElementById("items").textContent=JSON.stringify(produits);
-        for (let i = 0; i < produits.length; i++) {
-            //console.log(produits[i].description);
-            //console.log(produits[i].name);
+//envoyer une requête http GET au backend
+//Afficher les données reçues sur la page d'accueil par la manipulation du DOM
+fetch("http://localhost:3000/api/products")
+    .then((response) => response.json())//extraire le contenu json de la réponse
+    .then((produits) => {       
+        for (let i = 0; i < produits.length; i++) {//parcourir le tableau json des produits
+            //insérer chaque produit dans la page html
             document.getElementById("items").insertAdjacentHTML(
+                //insérer à la fin de "items"
                 "beforeend",
                 `<a href="./product.html?id=${produits[i]._id}">
                 <article>
@@ -16,4 +18,4 @@ fetch("http://localhost:3000/api/products").then(function (response) {
             );
         }
     });
-});
+
