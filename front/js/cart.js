@@ -1,17 +1,18 @@
 //Récupérer l'objet JSON (produitsChoisis) de la localStorage
-const textProduitsChoisis=localStorage.getItem("produitsChoisis") || "[]"//tableau vide si "produitsChoisis" est introuvable
+const textProduitsChoisis = localStorage.getItem("produitsChoisis") || "[]"; //tableau vide si "produitsChoisis" est introuvable
 let panierProduits = JSON.parse(textProduitsChoisis); //transformer un texte en objet
 
+affichagePanier(); //execution de la fonction dès l'ouverture de la page cart.html
 
-affichagePanier();//execution de la fonction dès l'ouverture de la page cart.html
-
-function affichagePanier() {    
+function affichagePanier() {
     //initialisation des variables pour le calcul du prix total et de la quantité totale
     let prixTotal = 0;
     let qteTotale = 0;
 
-    for (const produit of panierProduits) {//parcourir les produits dans le tableau panierProduits      
-        prixTotal = prixTotal + (parseFloat(produit.qte) * parseFloat(produit.prix));//calculer le prix total en cours
+    for (const produit of panierProduits) {
+        //parcourir les produits dans le tableau panierProduits
+        prixTotal =
+            prixTotal + parseFloat(produit.qte) * parseFloat(produit.prix); //calculer le prix total en cours
         qteTotale = qteTotale + parseInt(produit.qte);
 
         //insertion des données du produit en cours dans le DOM
@@ -31,18 +32,25 @@ function affichagePanier() {
                 <div class="cart__item__content__settings__quantity">
                 <p>Qté : </p>
                 <input id="${produit.id}-${produit.color}" 
-                onchange="changerQte('${produit.id}','${produit.color}')" type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produit.qte}">
+                onchange="changerQte('${produit.id}','${
+                produit.color
+            }')" type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${
+                produit.qte
+            }">
                     </div>
                     <div class="cart__item__content__settings__delete">
-                    <p onclick="supprimerProduit('${produit.id}','${produit.color}')" class="deleteItem">Supprimer</p>
+                    <p onclick="supprimerProduit('${produit.id}','${
+                produit.color
+            }')" class="deleteItem">Supprimer</p>
                     </div>
                 </div>
                 </div>
             </article>`
         );
-    }//fin de la boucle for
+    } //fin de la boucle for
 
-    document.getElementById("totalPrice").innerText = formatMonetaire(prixTotal);
+    document.getElementById("totalPrice").innerText =
+        formatMonetaire(prixTotal);
     document.getElementById("totalQuantity").innerText = qteTotale;
 }
 /**
@@ -59,20 +67,19 @@ function formatMonetaire(prix) {
  * @param  {number} idDelete
  * @param  {string} colorDelete
  */
-function supprimerProduit(idDelete,colorDelete) {
+function supprimerProduit(idDelete, colorDelete) {
     let panierFiltre = panierProduits.filter(checkProduct);
     //console.log("panierfiltre");
-    
+
     let formatTextProduitChoisi = JSON.stringify(panierFiltre);
     localStorage.setItem("produitsChoisis", formatTextProduitChoisi); //stocker dans le stockage local
     document.getElementById("cart__items").innerHTML = "";
 
     panierProduits = panierFiltre;
     affichagePanier();
-
-    function checkProduct(produit) {
-        return ((produit.id != idDelete)||(produit.color !=colorDelete));
-    }
+}
+function checkProduct(produit) {
+    return produit.id != idDelete || produit.color != colorDelete;
 }
 /**
  * @param  {} idProduit
@@ -83,26 +90,25 @@ function changerQte(idProduit, couleur) {
     let newQte = panierProduits.find(
         (p) => p.id == idProduit && p.color === couleur
     );
-    
-    let idInput = idProduit + "-" + couleur;//Trouver l'id de l'input de la quantité
+
+    let idInput = idProduit + "-" + couleur; //Trouver l'id de l'input de la quantité
     newQte.qte = document.getElementById(idInput).value;
     //supprimer le produit en cours du panier
     let panierFiltre = panierProduits.filter(
         (p) => p.id != idProduit || p.color != couleur
     );
-    panierFiltre.push(newQte);//insérer le produit en cours avec la nouvelle quantité
-    panierProduits = panierFiltre;//mise à jour de la liste du panier
+    panierFiltre.push(newQte); //insérer le produit en cours avec la nouvelle quantité
+    panierProduits = panierFiltre; //mise à jour de la liste du panier
     let prixTotal = 0;
     let qteTotale = 0;
     console.log("verification panier");
     console.log(panierProduits);
     for (const produit of panierProduits) {
         prixTotal =
-            prixTotal + (parseFloat(produit.qte) * parseFloat(produit.prix));
-            console.log("prix total");
-            console.log(prixTotal);
+            prixTotal + parseFloat(produit.qte) * parseFloat(produit.prix);
+        console.log("prix total");
+        console.log(prixTotal);
         qteTotale = qteTotale + parseInt(produit.qte);
-        
     }
     document.getElementById("totalPrice").innerText =
         formatMonetaire(prixTotal);
@@ -133,42 +139,44 @@ function formulaireValide() {
         return false;
     }
     const adresse = document.getElementById("address").value;
-    if (adresse === ""){
+    if (adresse === "") {
         alert(" adresse vide");
         return false;
-    };
-    if (!regexAddress.test(adresse)){
-        alert ("veuillez introduire une adresse valide");
-        return false;  
+    }
+    if (!regexAddress.test(adresse)) {
+        alert("veuillez introduire une adresse valide");
+        return false;
     }
     const ville = document.getElementById("city").value;
-    if (ville === ""){
+    if (ville === "") {
         alert("ville vide");
         return false;
-    };
-    if (!regexCity.test(ville)){
-        alert ("veuillez introduire un nom de ville valide");
-        return false;  
+    }
+    if (!regexCity.test(ville)) {
+        alert("veuillez introduire un nom de ville valide");
+        return false;
     }
     const email = document.getElementById("email").value;
-    if (email === ""){
+    if (email === "") {
         alert("email vide");
         return false;
-    };
-    if (!regexEmail.test(email)){
-        alert ("veuillez introduire un email valide");
-        return false;  
+    }
+    if (!regexEmail.test(email)) {
+        alert("veuillez introduire un email valide");
+        return false;
     }
 }
 
 function validerCommande() {
-    if(panierProduits.length===0){//vérifier si le panier est vide        
-        alert ("Veuillez svp choisir au moins un produit");
+    if (panierProduits.length === 0) {
+        //vérifier si le panier est vide
+        alert("Veuillez svp choisir au moins un produit");
         return;
     }
-    
-    if(formulaireValide()===false){//vérifier si le formulaire est valide
-                return;
+
+    if (formulaireValide() === false) {
+        //vérifier si le formulaire est valide
+        return;
     }
 
     //récupération des données depuis le DOM des input du formulaire
@@ -178,7 +186,7 @@ function validerCommande() {
     const ville = document.getElementById("city").value;
     const email = document.getElementById("email").value;
 
-    //Création d'un objet JSON contenant les données du formulaire 
+    //Création d'un objet JSON contenant les données du formulaire
     //La structure de l'objet est imposée par le back-end
     const infos = {
         firstName: prenom,
@@ -186,7 +194,7 @@ function validerCommande() {
         address: adresse,
         city: ville,
         email: email,
-    };   
+    };
     //création d'un objet JSON contenant les informations du client et un tableau des Id des produits
     //Les champs contact et products font partie de la structure exigée par le back-end
     const order = {
@@ -202,10 +210,9 @@ function validerCommande() {
     //envoyer les informations de la commande au back-end
     fetch("http://localhost:3000/api/products/order", requestOptions)
         .then((response) => {
-        
             if (response.ok == true) {
-                alert ("Votre Commande reçu avec succés!");
-                
+                alert("Votre Commande reçu avec succés!");
+
                 localStorage.removeItem("produitsChoisis"); //suppression du panier dans le local storage
                 response.json().then((informationsData) => {
                     window.location.replace(

@@ -1,3 +1,5 @@
+//récupération du bouton par son id et ajouter l'évènement click et l'associer avec la fonction AddToCart 
+document.getElementById("addToCart").addEventListener("click", addToCart);
 
 const productId = recupererIdUrl();
 
