@@ -68,7 +68,9 @@ function formatMonetaire(prix) {
  * @param  {string} colorDelete
  */
 function supprimerProduit(idDelete, colorDelete) {
-    let panierFiltre = panierProduits.filter(checkProduct);
+    let panierFiltre = panierProduits.filter(produit=>
+        produit.id != idDelete || produit.color != colorDelete
+    );
     //console.log("panierfiltre");
 
     let formatTextProduitChoisi = JSON.stringify(panierFiltre);
@@ -78,9 +80,7 @@ function supprimerProduit(idDelete, colorDelete) {
     panierProduits = panierFiltre;
     affichagePanier();
 }
-function checkProduct(produit) {
-    return produit.id != idDelete || produit.color != colorDelete;
-}
+
 /**
  * @param  {} idProduit
  * @param  {} couleur
@@ -99,6 +99,7 @@ function changerQte(idProduit, couleur) {
     );
     panierFiltre.push(newQte); //insérer le produit en cours avec la nouvelle quantité
     panierProduits = panierFiltre; //mise à jour de la liste du panier
+    localStorage.setItem('produitsChoisis',JSON.stringify(panierProduits)); //mise à jour du panier dans le stockage local
     let prixTotal = 0;
     let qteTotale = 0;
     console.log("verification panier");
