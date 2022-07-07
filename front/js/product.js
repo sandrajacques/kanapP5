@@ -37,7 +37,7 @@ function addToCart() {
 
     //récupérer les informations du produit en cours depuis le DOM
     const nomProduit = document.getElementById("title").textContent;
-    const price = document.getElementById("price").textContent;
+    //const price = document.getElementById("price").textContent;
     const quantite = document.getElementById("quantity").value;  
     const color = document.getElementById("colors").value;
     const imageUrl = document.getElementById("imageUrl").getAttribute("src");
@@ -49,7 +49,7 @@ function addToCart() {
     }
 
     //création d'un oblet JSON avec les informations du produit en cours
-    let produitChoisi = {id:productId, nom:nomProduit, prix:price, qte:quantite, color:color, imgUrl:imageUrl, altTxt:altImg};
+    let produitChoisi = {id:productId, nom:nomProduit, qte:quantite, color:color, imgUrl:imageUrl, altTxt:altImg};
 
     //vérification si le produit est déjà dans le panier avec le même ID et la meme couleur
     let produitExistant = panier.find(produit=>(produit.id==produitChoisi.id &&produit.color==produitChoisi.color));

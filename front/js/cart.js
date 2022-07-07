@@ -3,16 +3,25 @@ const textProduitsChoisis = localStorage.getItem("produitsChoisis") || "[]"; //t
 let panierProduits = JSON.parse(textProduitsChoisis); //transformer un texte en objet
 
 affichagePanier(); //execution de la fonction dès l'ouverture de la page cart.html
-
-function affichagePanier() {
+//fonction changer en asynchrone pour attendre la réponse du serveur avec le prix du produit
+async function prixProduit(idProduit) {
+    const resultat = await fetch(
+        `http://localhost:3000/api/products/${idProduit}`
+    )
+        .then((response) => response.json())
+        .then((produit) => produit.price);
+    return resultat;
+}
+async function affichagePanier() {
     //initialisation des variables pour le calcul du prix total et de la quantité totale
     let prixTotal = 0;
     let qteTotale = 0;
 
     for (const produit of panierProduits) {
         //parcourir les produits dans le tableau panierProduits
+        const prixUnitaire = await prixProduit(produit.id);       
         prixTotal =
-            prixTotal + parseFloat(produit.qte) * parseFloat(produit.prix); //calculer le prix total en cours
+            prixTotal + parseFloat(produit.qte) * parseFloat(prixUnitaire); //calculer le prix total en cours
         qteTotale = qteTotale + parseInt(produit.qte);
 
         //insertion des données du produit en cours dans le DOM
@@ -26,7 +35,7 @@ function affichagePanier() {
                 <div class="cart__item__content__description">
                     <h2>${produit.nom}</h2>
                     <p>${produit.color}</p>
-                    <p>${formatMonetaire(produit.prix)}€</p>
+                    <p>${formatMonetaire(prixUnitaire)}€</p>
                 </div>
                 <div class="cart__item__content__settings">
                 <div class="cart__item__content__settings__quantity">
@@ -68,8 +77,8 @@ function formatMonetaire(prix) {
  * @param  {string} colorDelete
  */
 function supprimerProduit(idDelete, colorDelete) {
-    let panierFiltre = panierProduits.filter(produit=>
-        produit.id != idDelete || produit.color != colorDelete
+    let panierFiltre = panierProduits.filter(
+        (produit) => produit.id != idDelete || produit.color != colorDelete
     );
     //console.log("panierfiltre");
 
@@ -85,7 +94,7 @@ function supprimerProduit(idDelete, colorDelete) {
  * @param  {} idProduit
  * @param  {} couleur
  */
-function changerQte(idProduit, couleur) {
+async function changerQte(idProduit, couleur) {
     //extraire le produit en cours
     let newQte = panierProduits.find(
         (p) => p.id == idProduit && p.color === couleur
@@ -99,14 +108,15 @@ function changerQte(idProduit, couleur) {
     );
     panierFiltre.push(newQte); //insérer le produit en cours avec la nouvelle quantité
     panierProduits = panierFiltre; //mise à jour de la liste du panier
-    localStorage.setItem('produitsChoisis',JSON.stringify(panierProduits)); //mise à jour du panier dans le stockage local
+    localStorage.setItem("produitsChoisis", JSON.stringify(panierProduits)); //mise à jour du panier dans le stockage local
     let prixTotal = 0;
     let qteTotale = 0;
     console.log("verification panier");
     console.log(panierProduits);
     for (const produit of panierProduits) {
+        const prixUnitaire = await prixProduit(produit.id);
         prixTotal =
-            prixTotal + parseFloat(produit.qte) * parseFloat(produit.prix);
+            prixTotal + parseFloat(produit.qte) * parseFloat(prixUnitaire);
         console.log("prix total");
         console.log(prixTotal);
         qteTotale = qteTotale + parseInt(produit.qte);
